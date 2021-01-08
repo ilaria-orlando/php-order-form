@@ -3,25 +3,50 @@
 ?>
 
 <?php
-    $email = $street = $streetnumber = $city = $zipcode = ' ';
+    $email = $street = $streetnumber = $city = $zipcode = '';
+    $emailErr = $streetErr = $streetNumErr = $cityErr = $zipcodeErr = '';
+    $errorMessage = '';
+    $divErr = '<div class="alert alert-danger" role="alert">';
     $productsArray = [];
     $productPrices = [];
     if(isset($_POST['order'])){
 
-        $productsSelected = array_keys($_POST['products']);
+        if(!empty($_POST['products'])){
+            $productsSelected = array_keys($_POST['products']);
 
-
-        foreach($productsSelected as $item){
-            array_push($productsArray, $products[$item]['name']);
-            array_push($productPrices, $products[$item]['price']);
+            foreach($productsSelected as $item){
+                array_push($productsArray, $products[$item]['name']);
+                array_push($productPrices, $products[$item]['price']);
+            }
         }
+
         $email =  $_POST['email'];
         $street = $_POST['street'];
         $streetnumber = $_POST['streetnumber'];
         $city = $_POST['city'];
         $zipcode = $_POST['zipcode'];
         $totalValue = array_sum($productPrices);
-}
+
+        if(empty($_POST['email'] || $_POST['street'] || $_POST['streetnumber'] || $_POST['city'] || $_POST['zipcode'])){
+            $errorMessage = '<div class="alert alert-danger" role="alert">Please fill in the required fields</div>';
+        }
+
+       if(empty($_POST['email'])){
+            $emailErr = "border border-danger";
+        }
+        if(empty($_POST['street'])){
+            $streetErr = "border border-danger";
+        }
+        if(empty($_POST['streetnumber'])){
+            $streetNumErr = "border border-danger";
+        }
+        if(empty($_POST['city'])){
+            $cityErr = "border border-danger";
+        }
+        if(empty($_POST['zipcode'])){
+            $zipcodeErr = "border border-danger";
+        }
+    }
 ?>
 
 <!doctype html>
@@ -51,11 +76,14 @@
         </ul>
     </nav>
     */ ?>
+    <?php
+        echo $errorMessage;
+    ?>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email" class="form-control"/>
+                <input type="text" id="email" name="email" class="form-control <?php echo $emailErr; ?>"/>
             </div>
             <div></div>
         </div>
@@ -66,21 +94,21 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control">
+                    <input type="text" name="street" id="street" class="form-control <?php echo $streetErr; ?>">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control">
+                    <input type="text" id="streetnumber" name="streetnumber" class="form-control <?php echo $streetNumErr;  ?>">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control">
+                    <input type="text" id="city" name="city" class="form-control <?php echo $cityErr; ?>">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control">
+                    <input type="text" id="zipcode" name="zipcode" class="form-control <?php echo $zipcodeErr; ?>">
                 </div>
             </div>
         </fieldset>
@@ -98,8 +126,8 @@
         <button type="submit" class="btn btn-primary" name="order">Order!</button><br>
     </form>
 
-    <div class="containe d-flex justify-content-center m-3 p-3">
-        <div class='container p-2'>
+    <div class="container d-flex justify-content-center m-3 p-3">
+        <div class="container p-2">
             <h5>Your order:</h5>
             <?php
                 foreach($productsArray as $item){
@@ -107,7 +135,7 @@
             }
             ?>
         </div>
-        <div class='container p-2'>
+        <div class="container p-2">
             <h5>Your Address:</h5>
             <?php
                 echo $street . " " . $streetnumber . "<br>";
