@@ -3,11 +3,13 @@
 ?>
 
 <?php
+    $email = $street = $streetnumber = $city = $zipcode = ' ';
+    $productsArray = [];
+    $productPrices = [];
     if(isset($_POST['order'])){
 
         $productsSelected = array_keys($_POST['products']);
-        $productsArray = [];
-        $productPrices = [];
+
 
         foreach($productsSelected as $item){
             array_push($productsArray, $products[$item]['name']);
@@ -49,7 +51,7 @@
         </ul>
     </nav>
     */ ?>
-    <form method="post">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
@@ -97,24 +99,25 @@
     </form>
 
     <div class="containe d-flex justify-content-center m-3 p-3">
-        <?php
-        if(isset($_POST['order'])){
-            echo "<div class='container p-2'><h5>Your order:</h5>";
-            foreach($productsArray as $item){
-                echo $item . '<br>';
+        <div class='container p-2'>
+            <h5>Your order:</h5>
+            <?php
+                foreach($productsArray as $item){
+                    echo $item . '<br>';
             }
-            echo "</div>";
-            echo "<div class='container p-2'><h5>Your Address:</h5>";
-            echo $street . " " . $streetnumber . "<br>";
-            echo $city . " " . $zipcode . "<br></div>";
-        }
-        ?>
+            ?>
+        </div>
+        <div class='container p-2'>
+            <h5>Your Address:</h5>
+            <?php
+                echo $street . " " . $streetnumber . "<br>";
+                echo $city . " " . $zipcode . "<br>";
+            ?>
+        </div>
     </div>
 
 
-
-    <footer>You already ordered <strong>&euro; <?php if(isset($_POST['order'])){
-                echo $totalValue;} ?></strong> in spiritual attributes.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $totalValue; ?></strong> in spiritual attributes.</footer>
 </div>
 
 <style>
